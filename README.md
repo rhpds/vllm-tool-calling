@@ -65,8 +65,8 @@ NOTE: To find more patterns and pre-built ModelCar images, take a look at the [R
 - For optimal performance on Xeon CPUs, refer to the Intel AI Performance Advisor for [cloud instances](https://xeonprocessoradvisor.intel.com/csp-ai-performance-advisor) and [on-prem servers](https://xeonprocessoradvisor.intel.com/on-prem-ai-performance-advisor) for a sizing guide, as well as [vLLM Recipes](https://recipes.vllm.ai/) for the model recipes.
 
 ### Required software  
-- Red Hat OpenShift 
-- Red Hat OpenShift AI 2.16+
+- Red Hat OpenShift 4.22
+- Red Hat OpenShift AI 3.latest
 - Dependencies for [Single-model server](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-single-model-serving-platform_component-install#configuring-automated-installation-of-kserve_component-install):
     - Red Hat OpenShift Service Mesh
     - Red Hat OpenShift Serverless
@@ -79,12 +79,12 @@ NOTE: To find more patterns and pre-built ModelCar images, take a look at the [R
 
 **Please note before you start**
 
-This example was tested on Red Hat OpenShift 4.16.24 & Red Hat OpenShift AI v2.16.2.  
+This quickstart targets Red Hat OpenShift 4.22 and Red Hat OpenShift AI 3.latest.
 
 ### Clone the repository
 
 ```
-git clone https://github.com/rh-ai-quickstart/vllm-tool-calling.git && \
+git clone https://github.com/rhpds/vllm-tool-calling.git && \
     cd vllm-tool-calling/  
 ```
 
