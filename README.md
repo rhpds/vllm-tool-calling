@@ -65,8 +65,8 @@ NOTE: To find more patterns and pre-built ModelCar images, take a look at the [R
 - For optimal performance on Xeon CPUs, refer to the Intel AI Performance Advisor for [cloud instances](https://xeonprocessoradvisor.intel.com/csp-ai-performance-advisor) and [on-prem servers](https://xeonprocessoradvisor.intel.com/on-prem-ai-performance-advisor) for a sizing guide, as well as [vLLM Recipes](https://recipes.vllm.ai/) for the model recipes.
 
 ### Required software  
-- Red Hat OpenShift 
-- Red Hat OpenShift AI 2.16+
+- Red Hat OpenShift 4.22
+- Red Hat OpenShift AI 3.latest
 - Dependencies for [Single-model server](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/installing_and_uninstalling_openshift_ai_self-managed/installing-the-single-model-serving-platform_component-install#configuring-automated-installation-of-kserve_component-install):
     - Red Hat OpenShift Service Mesh
     - Red Hat OpenShift Serverless
@@ -79,12 +79,23 @@ NOTE: To find more patterns and pre-built ModelCar images, take a look at the [R
 
 **Please note before you start**
 
-This example was tested on Red Hat OpenShift 4.16.24 & Red Hat OpenShift AI v2.16.2.  
+This quickstart targets Red Hat OpenShift 4.22 and Red Hat OpenShift AI 3.latest.
+
+### RHDP delivery profiles
+
+This standalone quickstart deploys a model server. The RHDP guided Showroom
+uses an existing MaaS model and a tenant-scoped virtual key; it does not deploy
+a second server. Follow the URL and authentication contract for the selected
+path. `API_KEY="EMPTY"` below applies only to the standalone unprotected model,
+never to the authenticated MaaS lab.
+
+RHDP tracking: [GPTEINFRA-17784](https://redhat.atlassian.net/browse/GPTEINFRA-17784)
+and [INTEL-47](https://redhat.atlassian.net/browse/INTEL-47).
 
 ### Clone the repository
 
 ```
-git clone https://github.com/rh-ai-quickstart/vllm-tool-calling.git && \
+git clone https://github.com/rhpds/vllm-tool-calling.git && \
     cd vllm-tool-calling/  
 ```
 
@@ -102,10 +113,15 @@ Specify your LLM and device:
 - MODEL: select from [[granite3.2-8b](https://huggingface.co/ibm-granite/granite-3.2-8b-instruct), [llama3.2-1b](https://huggingface.co/meta-llama/Llama-3.2-1B), [llama3.2-3b](https://huggingface.co/meta-llama/Llama-3.2-3B)]
 - DEVICE: select from [cpu, gpu, hpu]
 
+For the tool-calling exercise use Granite 3.2-8B or Llama 3.2-3B.
+The RHDP verifier deployed Llama 3.2-1B but did not obtain tool calls;
+its overlay is retained for comparison, not recommended for this exercise.
+Deployment readiness alone does not establish tool-calling support.
+
 Set variables to the selected options. Example is shown below.
 ```bash
 export MODEL="granite3.2-8b"
-export DEVICE="gpu"
+export DEVICE="cpu"
 ```
 
 Deploy the LLM on the target hardware:
@@ -156,7 +172,7 @@ On the left-hand side, navigate to rh-aiservices-bu/llm-on-openshift/examples/no
 ![OpenShift AI Projects](assets/images/rhoai-7.png)
 
 Execute the first few cells. In section 3 Model Configuration, set the following variables depending on the model deployed:
-- **INFERENCE_SERVER_URL**: the inference endpoint noted down AND append `:8080` since that is the default port for vLLM
+- **INFERENCE_SERVER_URL**: the externally exposed inference URL noted down; do not append an internal container port to an HTTPS Route
 - **MODEL_NAME**: the model deployment name noted down
 - **API_KEY**: set to `"EMPTY"`
 
@@ -166,7 +182,7 @@ Continue running the rest of the notebook to invoke tools. The `query` can also 
 
 To remove all deployed components:
 ```bash
-oc delete -n $PROJECT -f vllm-tool-calling/$MODEL/$DEVICE
+oc delete -n $PROJECT -k vllm-tool-calling/$MODEL/$DEVICE
 ```
 
 Delete the project:
